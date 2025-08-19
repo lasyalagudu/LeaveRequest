@@ -11,5 +11,5 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)  # ✅ replaced username with email
-    password = Column(String, nullable=False)
+    password = Column(String, nullable=True)
     role = Column(Enum(RoleEnum), default=RoleEnum.employee)

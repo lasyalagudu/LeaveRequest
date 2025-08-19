@@ -22,7 +22,6 @@ class LeaveStatusType(str, Enum):
 # ============================================
 # ENHANCED LEAVE APPLICATION SCHEMA
 # ============================================
-
 class LeaveApply(BaseModel):
     """Leave application with comprehensive validation"""
     model_config = ConfigDict(
@@ -31,14 +30,12 @@ class LeaveApply(BaseModel):
         extra='forbid'              # Don't allow extra fields
     )
     
-    # Employee ID with constraints
     employee_id: int = Field(
         gt=0, 
         description="Must be a positive integer",
         example=123
     )
     
-    # Date fields with basic constraints
     start_date: date = Field(
         description="Leave start date",
         example="2024-12-01"
@@ -49,7 +46,6 @@ class LeaveApply(BaseModel):
         example="2024-12-05"
     )
     
-    # Reason with comprehensive constraints
     reason: Optional[str] = Field(
         None,
         min_length=3,
@@ -57,6 +53,13 @@ class LeaveApply(BaseModel):
         description="Reason for leave (optional but recommended)",
         example="Family vacation"
     )
+    
+    leave_type_id: int = Field(
+        gt=0,
+        description="Leave type ID (e.g., 1 for Annual, 2 for Sick)",
+        example=1
+    )
+    
     
     # ============================================
     # FIELD VALIDATORS
@@ -196,18 +199,26 @@ class LeaveOut(BaseModel):
     approved_at: Optional[datetime] = Field(None, description="When request was approved")
     approver_note: Optional[str] = Field(None, description="Note from approver")
     
+    # @field_validator('days')
+    # @classmethod
+    # def validate_days(cls, v, info):
+    #     """Validate calculated days match date range"""
+    #     start_date = info.data.get('start_date')
+    #     end_date = info.data.get('end_date')
+        
+    #     if start_date and end_date:
+    #         calculated_days = (end_date - start_date).days + 1
+    #         if v != calculated_days:
+    #             raise ValueError("Days field doesn't match date range")
+        
+    #     return v
+
     @field_validator('days')
     @classmethod
     def validate_days(cls, v, info):
-        """Validate calculated days match date range"""
-        start_date = info.data.get('start_date')
-        end_date = info.data.get('end_date')
-        
-        if start_date and end_date:
-            calculated_days = (end_date - start_date).days + 1
-            if v != calculated_days:
-                raise ValueError("Days field doesn't match date range")
-        
+        """Ensure days is a positive integer"""
+        if v < 1:
+            raise ValueError("Days must be at least 1")
         return v
 
 # ============================================

@@ -72,11 +72,25 @@ class LeaveService:
             days=days,
             reason=payload.reason or None,
             status=LeaveStatus.PENDING,
+            leave_type_id=payload.leave_type_id, 
         )
         db.add(lr)
         db.commit()
         db.refresh(lr)
-        return lr
+
+        # Return as LeaveOut Pydantic model
+        return LeaveOut(
+            id=lr.id,
+            employee_id=lr.employee_id,
+            start_date=lr.start_date,
+            end_date=lr.end_date,
+            days=days,
+            status=lr.status,
+            reason=lr.reason,
+            created_at=getattr(lr, 'created_at', None),
+            approved_at=getattr(lr, 'approved_at', None),
+            approver_note=getattr(lr, 'approver_note', None),
+        )
 
     @staticmethod
     def act_on_leave(leave_id: int, payload: LeaveAction, db: Session) -> LeaveOut:
@@ -107,7 +121,20 @@ class LeaveService:
         db.add(lr)
         db.commit()
         db.refresh(lr)
-        return lr
+
+        # Return as LeaveOut Pydantic model with existing lr.days (workdays)
+        return LeaveOut(
+            id=lr.id,
+            employee_id=lr.employee_id,
+            start_date=lr.start_date,
+            end_date=lr.end_date,
+            days=lr.days,
+            status=lr.status,
+            reason=lr.reason,
+            created_at=getattr(lr, 'created_at', None),
+            approved_at=getattr(lr, 'approved_at', None),
+            approver_note=getattr(lr, 'approver_note', None),
+        )
 
     @staticmethod
     def leave_balance(employee_id: int, db: Session) -> LeaveBalanceOut:
@@ -146,7 +173,7 @@ class LeaveService:
 
     # ✅ Modify leave (only PENDING)
     @staticmethod
-    def modify_leave(leave_id: int, employee_id: int, start_date: date, end_date: date, reason: str, db: Session):
+    def modify_leave(leave_id: int, employee_id: int, start_date: date, end_date: date, reason: str, db: Session) -> LeaveOut:
         lr = db.query(LeaveRequest).filter(
             LeaveRequest.id == leave_id,
             LeaveRequest.employee_id == employee_id
@@ -167,6 +194,17 @@ class LeaveService:
 
         db.commit()
         db.refresh(lr)
-        return lr
-    
-   
+
+        # Return as LeaveOut Pydantic model
+        return LeaveOut(
+            id=lr.id,
+            employee_id=lr.employee_id,
+            start_date=lr.start_date,
+            end_date=lr.end_date,
+            days=days,
+            status=lr.status,
+            reason=lr.reason,
+            created_at=getattr(lr, 'created_at', None),
+            approved_at=getattr(lr, 'approved_at', None),
+            approver_note=getattr(lr, 'approver_note', None),
+        )

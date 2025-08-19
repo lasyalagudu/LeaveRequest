@@ -13,19 +13,24 @@ class Settings(BaseSettings):
 
     DEFAULT_ANNUAL_ALLOCATION: int = 24
 
-     # ✅ Holidays API settings
-    COUNTRY: str = "IN"        # <-- add this
-    API_KEY: str               # <-- add this if you want to keep API key here
+    COUNTRY: str = "IN"
+    API_KEY: str  # holidays API
+
+    # ✅ SMTP configuration
+    SMTP_SERVER: str = "smtp.gmail.com"       # SMTP host
+    SMTP_PORT: int = 587                       # TLS port
+    SMTP_USERNAME: str = "lasyalagudu@gmail.com"
+    SMTP_PASSWORD: str = "tskf rcls wiqf qmpa"   # use App Password if Gmail
+    SMTP_FROM: str = "lasyalagudu@gmail.com"
+    SMTP_TLS: bool = True
+    SMTP_SSL: bool = False
 
     @property
     def DATABASE_URL(self) -> str:
-        # Use this for Postgres:
         return (
             f"postgresql+psycopg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
             f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )
-        # For quick local SQLite testing, comment the above and use:
-        # return "sqlite:///./leave.db"
 
     class Config:
         env_file = ".env"

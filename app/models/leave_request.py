@@ -1,7 +1,9 @@
 # app/models/leave_request.py
 from sqlalchemy import Column, Integer, Date, Enum, DateTime, ForeignKey, String, func
 import enum
+from sqlalchemy.orm import relationship
 from app.core.db import Base
+from app.models.leave_type import LeaveType
 
 class LeaveStatus(str, enum.Enum):
     PENDING = "PENDING"
@@ -20,3 +22,8 @@ class LeaveRequest(Base):
     status = Column(Enum(LeaveStatus), nullable=False, default=LeaveStatus.PENDING)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    leave_type_id = Column(Integer, ForeignKey("leave_types.id"), nullable=False)
+    leave_type = relationship("LeaveType", back_populates="leave_requests")
+    status = Column(Enum(LeaveStatus), default=LeaveStatus.PENDING, nullable=False)
+    approved_at = Column(DateTime(timezone=True), nullable=True)
+
