@@ -96,60 +96,21 @@ check for leave balance
 }
 
 
-Assumptions
 
-Employee data already exists in the database.
+**Edge Cases Handled**
+1)Add email notifications on adding new employee so that employee can reset password
+2)Validation of leave applications with start or end dates in the past.
+3)Prevent overlapping leave requests for the same employee.
+4)Reject leave if days requested exceed remaining leave balance.
+5)Validation ensures end date is not before start date.
+6)Validation for leave modification and cancellation only if leave status is PENDING.
+7)Prevent approving or rejecting leave requests not in PENDING state.
+8)Validation of leave days in response to ensure consistency with date range.
+9)Pagination and filtering support on leave search.
+10)Duplicate leave IDs and invalid IDs rejected in bulk actions.
+11)Implemented role-based access control (e.g., employee vs. HR).
+12)Stored Passwords securely bcrypting them
+13)Support for carry-forward leave balance and leave expiry.
 
-Leave types are predefined and stored in the database.
-
-Annual leave allocation is defined per employee.
-
-Holidays are fetched based on country and year from an external or internal service.
-
-Leave days count excludes weekends and holidays using a workdays calculation function.
-
-Only PENDING leaves can be acted upon (approved or rejected).
-
-Leave approval respects the available leave balance.
-
-Edge Cases Handled
-
-Reject leave applications with start or end dates in the past.
-
-Prevent overlapping leave requests for the same employee.
-
-Reject leave if days requested exceed remaining leave balance.
-
-Validation ensures end date is not before start date.
-
-Validation for leave modification and cancellation only if leave status is PENDING.
-
-Prevent approving or rejecting leave requests not in PENDING state.
-
-Validation of leave days in response to ensure consistency with date range.
-
-Pagination and filtering support on leave search.
-
-Duplicate leave IDs and invalid IDs rejected in bulk actions.
-
-Potential Improvements
-
-Implement role-based access control (e.g., employee vs. manager vs. HR).
-
-Add email notifications on leave apply, approval, rejection, and cancellation.
-
-Support for half-day or hourly leaves.
-
-Audit logs for leave request changes.
-
-API rate limiting and throttling.
-
-Improved holiday service with caching.
-
-Support for carry-forward leave balance and leave expiry.
-
-Add comprehensive unit and integration tests.
-
-Frontend UI for employees and managers to interact with the API.
 
 <img width="901" height="685" alt="Screenshot 2025-08-19 234003" src="https://github.com/user-attachments/assets/e3f18b74-ca76-4465-857a-cce15300b5d2" />
